@@ -9,3 +9,11 @@ __pycache__/
 *.vscode/
 .env
 *.DS_Store
+*.egg-info/
+.git/
+.gitignore
+.dockerignore
+tests/
+*.bak
+*.tmp
+node_modules/
