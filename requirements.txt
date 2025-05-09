@@ -3,4 +3,4 @@ requests==2.23.0
 requests-cache==0.5.2
 Werkzeug==0.16.0
 gunicorn==20.0.4
-opencv-python-headless
+opencv-python-headless==4.5.5.64
