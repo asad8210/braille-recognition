@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: braille-recognition-app
+    name: braille-assistive-app-iitbhu
     env: docker
     repo: https://github.com/asad8210/braille-recognition.git
     branch: main
