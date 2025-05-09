@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Saira+Condensed:wght@300;400;700&display=swap"
+    rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <title>Braille Assistive System</title> <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+      padding-top: 80px;
+      padding-bottom: 100px;
+      margin: 0;
+    }
+
+    .header {
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 15px 0;
+    }
+
+    .title {
+      color: #272c35;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+      margin: 0;
+    }
+
+    .input-image {
+      display: block;
+      max-width: 100%;
+      max-height: 45vh;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-image:hover {
+      transform: scale(1.02);
+    }
+
+    .output-box {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 1.1rem;
+      white-space: pre-wrap;
+    }
+
+    .upload-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .upload-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-file-input::-webkit-file-upload-button {
+      background: #f3e8ff;
+      color: #6d28d9;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-right: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .custom-file-input:hover::-webkit-file-upload-button {
+      background: #ddd6fe;
+    }
+
+    .footer {
+      background: #ffffff;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 0;
+      z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+      .output-box {
+        font-size: 0.95rem;
+      }
+
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="title">Braille Assistive Reader "IIT BHU"</h1>
+    </div>
+  </header>
+
+  <div class="container mt-5 pt-4">
+    <div class="text-center">
+      <img id="inputimage" src="/coverimage" class="input-image" alt="Uploaded Braille Image" />
+    </div>
+
+    <div class="output-box text-center mt-4" id="output">
+  " Touch on 'CONVERT SCRIPT' Button to get the Braille Script Text to English Text...! "
+    </div>
+
+    <div class="card upload-card mb-5">
+      <div class="card-body">
+        <div id="alert_wrapper"></div>
+
+        <div class="form-group">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" name="file_input" id="file_input" accept="image/*"
+              onchange="input_filename()">
+            <label id="file_input_label" class="custom-file-label" for="file_input">Choose Braille Script
+              Images</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between mt-3">
+          <button onclick="upload('/digest')" id="upload_btn" class="btn btn-primary px-4">
+            Convert Script
+          </button>
+
+          <button class="btn btn-primary px-4" id="loading_btn" type="button" disabled style="display: none;">
+            <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+            Processing...
+          </button>
+
+          <button type="button" id="cancel_btn" class="btn btn-outline-secondary px-4" style="display: none;">
+            Cancel
+          </button>
+
+          <button class="btn btn-dark px-4" id="play_btn" disabled>
+            <i class="fas fa-volume-up mr-2"></i>Read Text
+          </button>
+          
+        </div>
+
+        <div id="progress_wrapper" class="mt-3" style="display: none;">
+          <div class="d-flex justify-content-between mb-1">
+            <small id="progress_status">Uploading: 0%</small>
+            <small id="progress_speed"></small>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+              style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center">
+    <div class="text-muted">Assistive System (IIT BHU Varanasi)</div>
+  </footer>
+
+  <!-- JS dependencies (optional but recommended for Bootstrap JS) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS for filename display -->
+  <script>
+    function input_filename() {
+      const fileInput = document.getElementById("file_input");
+      const fileLabel = document.getElementById("file_input_label");
+      fileLabel.innerText = fileInput.files[0].name;
+    }
+
+    // Placeholder functions for upload, play, cancel
+    function upload(url) {
+      document.getElementById("upload_btn").style.display = "none";
+      document.getElementById("loading_btn").style.display = "inline-block";
+      document.getElementById("cancel_btn").style.display = "inline-block";
+    }
+  </script>
+  <!-- Font Awesome for icons -->
+  <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+
+  <script>
+    // DOM Elements
+    const progress = document.getElementById("progress");
+    const progress_wrapper = document.getElementById("progress_wrapper");
+    const progress_status = document.getElementById("progress_status");
+    const progress_speed = document.getElementById("progress_speed");
+    const upload_btn = document.getElementById("upload_btn");
+    const loading_btn = document.getElementById("loading_btn");
+    const cancel_btn = document.getElementById("cancel_btn");
+    const play_btn = document.getElementById("play_btn");
+    const alert_wrapper = document.getElementById("alert_wrapper");
+    const file_input = document.getElementById("file_input");
+    const file_input_label = document.getElementById("file_input_label");
+    const input_image = document.getElementById("inputimage");
+    const output_text = document.getElementById("output");
+
+    // Variables for upload speed calculation
+    let uploadStartTime;
+    let lastLoaded = 0;
+
+    // Show alert message
+    function show_alert(message, alert_type) {
+      alert_wrapper.innerHTML = `
+          <div class="alert alert-${alert_type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        `;
+    }
+
+    // Update filename display
+    function input_filename() {
+      if (file_input.files.length > 0) {
+        file_input_label.innerText = file_input.files[0].name;
+      }
+    }
+
+    // Upload file to server
+    function upload(url) {
+      if (!file_input.files.length) {
+        show_alert("Please select a file first", "warning");
+        return;
+      }
+
+      const data = new FormData();
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+
+      alert_wrapper.innerHTML = "";
+      file_input.disabled = true;
+      upload_btn.style.display = "none";
+      loading_btn.style.display = "block";
+      cancel_btn.style.display = "block";
+      progress_wrapper.style.display = "block";
+      play_btn.disabled = true;
+
+      const file = file_input.files[0];
+      data.append("file", file);
+
+      // Reset and start upload timer
+      uploadStartTime = Date.now();
+      lastLoaded = 0;
+
+      request.upload.addEventListener("progress", function (e) {
+        const percent_complete = Math.floor((e.loaded / e.total) * 100);
+        progress.style.width = `${percent_complete}%`;
+        progress_status.innerText = `Uploading: ${percent_complete}%`;
+
+        // Calculate upload speed
+        const now = Date.now();
+        const timeDiff = (now - uploadStartTime) / 1000; // in seconds
+        const loadedDiff = e.loaded - lastLoaded;
+        const speed = loadedDiff / timeDiff; // bytes per second
+
+        // Convert to readable format
+        let speedText;
+        if (speed > 1024 * 1024) {
+          speedText = (speed / (1024 * 1024)).toFixed(1) + " MB/s";
+        } else if (speed > 1024) {
+          speedText = (speed / 1024).toFixed(1) + " KB/s";
+        } else {
+          speedText = speed.toFixed(0) + " B/s";
+        }
+
+        progress_speed.innerText = speedText;
+
+        // Update for next calculation
+        uploadStartTime = now;
+        lastLoaded = e.loaded;
+      });
+
+      request.addEventListener("load", function () {
+        if (request.status === 200) {
+          if (request.response.error) {
+            show_alert(request.response.message, "danger");
+          } else {
+            // Update image with cache-busting query string
+            input_image.src = `/procimage/${request.response.img_id}?${Date.now()}`;
+            output_text.innerText = request.response.digest;
+            show_alert(request.response.message, "success");
+            play_btn.disabled = false;
+          }
+        } else {
+          show_alert("Error processing file", "danger");
+        }
+        reset_upload();
+      });
+
+      request.addEventListener("error", function () {
+        show_alert("Error uploading file", "danger");
+        reset_upload();
+      });
+
+      request.addEventListener("abort", function () {
+        show_alert("Upload cancelled", "info");
+        reset_upload();
+      });
+
+      request.open("POST", url);
+      request.send(data);
+
+      cancel_btn.addEventListener("click", function () {
+        request.abort();
+      });
+    }
+
+    // Reset upload interface
+    function reset_upload() {
+      file_input.disabled = false;
+      upload_btn.style.display = "block";
+      loading_btn.style.display = "none";
+      cancel_btn.style.display = "none";
+      progress_wrapper.style.display = "none";
+      progress.style.width = "0%";
+      progress_speed.innerText = "";
+    }
+
+    // Text-to-speech function
+    function speak() {
+      const text = output_text.innerText;
+      if (!text || text === "Click on Convert to get the English text for the above image") {
+        show_alert("No text to speak. Please convert an image first.", "warning");
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = text;
+      utterance.lang = 'en-US';
+      utterance.rate = 1;
+      utterance.pitch = 0.8;
+      utterance.volume = 1;
+
+      // Try to find a pleasant voice
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        // Prefer female voices for better clarity
+        const femaleVoices = voices.filter(v => v.name.includes('Female') || v.name.includes('Woman'));
+        if (femaleVoices.length > 0) {
+          utterance.voice = femaleVoices[0];
+        } else {
+          utterance.voice = voices[0];
+        }
+      }
+
+      // Disable play button during speech
+      play_btn.disabled = true;
+      utterance.onend = function () {
+        play_btn.disabled = false;
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Event listeners
+    play_btn.addEventListener("click", speak);
+
+    // Initialize speech synthesis voices
+    if (window.speechSynthesis) {
+      speechSynthesis.onvoiceschanged = function () {
+        console.log("Voices loaded");
+      };
+    }
+  </script>
+</body>
+
+</html>
