@@ -119,7 +119,10 @@
 <body>
   <header class="header">
     <div class="container">
-      <h1 class="title">Braille Assistive Reader</h1>
+      <h2 class="title">Braille Assistive Reader
+      <p class="text-center text-muted mb-0">IIT BHU Varanashi
+      <p>
+      </h2>
     </div>
   </header>
 
@@ -174,11 +177,19 @@
           </div>
         </div>
       </div>
-      <p class="title">Tap if You want to Image-Text to Braille Script</p>
-      <button class="btn btn-dark px-4" onclick="redirectToReader()">
+      <h2 class="title">Tap For Image-Text to Braille Script</h2>
+      <button class="btn btn-primary btn-custom-small" onclick="redirectToReader()">
         Image-Text Reader
       </button>
-
+      <style>
+        .btn-custom-small {
+          font-size: 1.3rem;
+          /* smaller text */
+          padding: 10px 10px;
+          /* top/bottom 4px, left/right 10px */
+          border-radius: 8px;
+        }
+      </style>
       <script>
         function redirectToReader() {
           // Save the origin page URL in sessionStorage
